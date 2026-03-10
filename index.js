@@ -4,10 +4,17 @@ const { Sequelize, DataTypes } = require("sequelize");
 const app = express();
 const port = 3000;
 
-const sequelize = new Sequelize("shop", "usershop2", "passwordshop", {
+/*const sequelize = new Sequelize("shop", "usershop2", "passwordshop", {
   host: "localhost",
   dialect: "mysql",
 });
+*/
+
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: 'database.sqlite'
+});
+
 
 // todo: Перенести в окремі файли моделі та налаштування бази даних
 const Products = sequelize.define("Products", {
