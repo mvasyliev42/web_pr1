@@ -65,10 +65,21 @@ await sequelize.sync();
 
 const app = express();
 const port = 3000;
+app.use(express.json());
 
 app.get("/Products", async (req, res) => {
   const products = await Products.findAll();
   res.json(products);
+});
+
+app.post("/Order", async (req, res) => {
+  const order = await Orders.create({
+    FName: req.body.FName,
+    LName: req.body.LName,
+    Phone: req.body.Phone,
+  });
+  console.log(req.body);
+  res.json(order);
 });
 
 app.get("/", (req, res) => {
