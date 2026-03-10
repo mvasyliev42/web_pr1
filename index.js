@@ -11,10 +11,9 @@ const port = 3000;
 */
 
 const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'database.sqlite'
+  dialect: "sqlite",
+  storage: "database.sqlite",
 });
-
 
 // todo: Перенести в окремі файли моделі та налаштування бази даних
 const Products = sequelize.define("Products", {
@@ -65,7 +64,7 @@ OrderProducts.belongsTo(Products);
 sequelize.sync({ force: true });
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hi World!!!");
 });
 
 app.listen(port, () => {
