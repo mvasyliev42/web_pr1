@@ -1,8 +1,8 @@
-const express = require("express");
-const { Sequelize, DataTypes } = require("sequelize");
+import express from "express";
+import { Sequelize, DataTypes } from "sequelize";
 
-const app = express();
-const port = 3000;
+// const express = require("express");
+// const { Sequelize, DataTypes } = require("sequelize");
 
 /*const sequelize = new Sequelize("shop", "usershop2", "passwordshop", {
   host: "localhost",
@@ -61,7 +61,15 @@ OrderProducts.belongsTo(Orders);
 Products.hasOne(OrderProducts);
 OrderProducts.belongsTo(Products);
 
-sequelize.sync({ force: true });
+await sequelize.sync();
+
+const app = express();
+const port = 3000;
+
+app.get("/Products", async (req, res) => {
+  const products = await Products.findAll();
+  res.json(products);
+});
 
 app.get("/", (req, res) => {
   res.send("Hi World!!!");
