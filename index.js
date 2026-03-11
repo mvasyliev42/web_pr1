@@ -32,6 +32,8 @@ const Products = sequelize.define("Products", {
   },
 });
 
+//todo: Додати статус замовлення
+
 const Orders = sequelize.define("Orders", {
   // Model attributes are defined here
   FName: {
@@ -73,6 +75,8 @@ app.get("/Products", async (req, res) => {
 });
 
 app.post("/Order", async (req, res) => {
+  //todo: Додати збереження пов'язаного поля OrderProducts
+  // https://sequelize.org/docs/v6/advanced-association-concepts/creating-with-associations/#hasmany--belongstomany-association
   const order = await Orders.create({
     FName: req.body.FName,
     LName: req.body.LName,
@@ -81,6 +85,8 @@ app.post("/Order", async (req, res) => {
   console.log(req.body);
   res.json(order);
 });
+
+// Додати REST endpoint для отримання інформації по замовленню
 
 app.get("/", (req, res) => {
   res.send("Hi World!!!");
