@@ -1,5 +1,6 @@
 import express from "express";
 import { Sequelize, DataTypes } from "sequelize";
+// import { Database } from "sqlite3";
 
 // const express = require("express");
 // const { Sequelize, DataTypes } = require("sequelize");
@@ -32,8 +33,6 @@ const Products = sequelize.define("Products", {
   },
 });
 
-//todo: Додати статус замовлення
-
 const Orders = sequelize.define("Orders", {
   // Model attributes are defined here
   FName: {
@@ -48,12 +47,18 @@ const Orders = sequelize.define("Orders", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  Status: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 const OrderProducts = sequelize.define("OrderProducts", {
   Price: {
     type: DataTypes.FLOAT,
-    // allowNull defaults to true
+  },
+  Count: {
+    type: DataTypes.INTEGER,
   },
 });
 
@@ -63,7 +68,7 @@ OrderProducts.belongsTo(Orders);
 Products.hasOne(OrderProducts);
 OrderProducts.belongsTo(Products);
 
-await sequelize.sync();
+await sequelize.sync({ force: false });
 
 const app = express();
 const port = 3000;
@@ -77,11 +82,29 @@ app.get("/Products", async (req, res) => {
 app.post("/Order", async (req, res) => {
   //todo: Додати збереження пов'язаного поля OrderProducts
   // https://sequelize.org/docs/v6/advanced-association-concepts/creating-with-associations/#hasmany--belongstomany-association
-  const order = await Orders.create({
-    FName: req.body.FName,
-    LName: req.body.LName,
-    Phone: req.body.Phone,
-  });
+  const Info = await Promise.all(
+    req.body.OrderProducts.map(async function (OneProduct) {
+      const product = await Products.findOne({
+        where: {
+          id: OneProduct.ProductId,
+        },
+      });
+      OneProduct.Price = product.Price;
+      return OneProduct;
+    }),
+  );
+  const order = await Orders.create(
+    {
+      FName: req.body.FName,
+      LName: req.body.LName,
+      Phone: req.body.Phone,
+      OrderProducts: Info,
+      Status: 10,
+    },
+    {
+      include: [OrderProducts],
+    },
+  );
   console.log(req.body);
   res.json(order);
 });
