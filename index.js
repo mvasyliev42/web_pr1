@@ -109,7 +109,7 @@ app.post("/Order", async (req, res) => {
       Phone: req.body.Phone,
       OrderProducts: Info,
       Status: 10,
-      Hash: generateHash(req.body.FName + req.body.Phone + Date.now())
+      Hash: await generateHash(req.body.FName + req.body.Phone + Date.now())
     },
     {
       include: [OrderProducts],
