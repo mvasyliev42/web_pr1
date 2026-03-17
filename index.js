@@ -33,6 +33,7 @@ const Products = sequelize.define("Products", {
   },
 });
 
+//todo: add hash fields
 const Orders = sequelize.define("Orders", {
   // Model attributes are defined here
   FName: {
@@ -68,7 +69,11 @@ OrderProducts.belongsTo(Orders);
 Products.hasOne(OrderProducts);
 OrderProducts.belongsTo(Products);
 
+<<<<<<< HEAD
 await sequelize.sync({});
+=======
+await sequelize.sync({ force: true });
+>>>>>>> new_page
 
 const app = express();
 const port = 3000;
@@ -93,6 +98,8 @@ app.post("/Order", async (req, res) => {
       return OneProduct;
     }),
   );
+
+  //todo: create hash and add to order
   const order = await Orders.create(
     {
       FName: req.body.FName,
@@ -109,14 +116,10 @@ app.post("/Order", async (req, res) => {
   res.json(order);
 });
 
-// Додати REST endpoint для отримання інформації по замовленню
+// Додати REST endpoint для отримання інформації по замовленню за hash
 
 app.get("/", (req, res) => {
   res.send("Hi World!!!");
-});
-
-app.get("/newpage", (req, res) => {
-  res.send("New page");
 });
 
 app.listen(port, () => {
