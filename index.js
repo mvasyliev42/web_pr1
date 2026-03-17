@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import { Sequelize, DataTypes } from "sequelize";
 // import { Database } from "sqlite3";
 
@@ -51,7 +51,11 @@ const Orders = sequelize.define("Orders", {
   Status: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  },
+    },
+    Hash: {
+        type: DataTypes.STRING,
+        allowNull:false,
+    },
 });
 
 const OrderProducts = sequelize.define("OrderProducts", {
@@ -69,11 +73,7 @@ OrderProducts.belongsTo(Orders);
 Products.hasOne(OrderProducts);
 OrderProducts.belongsTo(Products);
 
-<<<<<<< HEAD
-await sequelize.sync({});
-=======
-await sequelize.sync({ force: true });
->>>>>>> new_page
+await sequelize.sync({ force: false });
 
 const app = express();
 const port = 3000;
@@ -94,6 +94,8 @@ app.post("/Order", async (req, res) => {
           id: OneProduct.ProductId,
         },
       });
+        console.log(product);
+        console.log(OneProduct.ProductId);
       OneProduct.Price = product.Price;
       return OneProduct;
     }),
@@ -107,6 +109,7 @@ app.post("/Order", async (req, res) => {
       Phone: req.body.Phone,
       OrderProducts: Info,
       Status: 10,
+      Hash: generateHash(req.body.FName + req.body.Phone + Date.now())
     },
     {
       include: [OrderProducts],
@@ -115,6 +118,17 @@ app.post("/Order", async (req, res) => {
   console.log(req.body);
   res.json(order);
 });
+
+async function generateHash(input) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+
+    return hashHex;
+}
 
 // Додати REST endpoint для отримання інформації по замовленню за hash
 
