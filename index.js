@@ -68,7 +68,7 @@ OrderProducts.belongsTo(Orders);
 Products.hasOne(OrderProducts);
 OrderProducts.belongsTo(Products);
 
-await sequelize.sync({ force: false });
+await sequelize.sync({ force: true });
 
 const app = express();
 const port = 3000;
