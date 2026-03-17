@@ -80,6 +80,7 @@ app.get("/Products", async (req, res) => {
 });
 
 app.post("/Order", async (req, res) => {
+  //
   // https://sequelize.org/docs/v6/advanced-association-concepts/creating-with-associations/#hasmany--belongstomany-association
   const Info = await Promise.all(
     req.body.OrderProducts.map(async function (OneProduct) {
