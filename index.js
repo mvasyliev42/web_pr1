@@ -115,6 +115,10 @@ app.get("/", (req, res) => {
   res.send("Hi World!!!");
 });
 
+app.get("/newpage", (req, res) => {
+  res.send("New page");
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
