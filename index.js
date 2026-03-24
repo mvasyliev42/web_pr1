@@ -51,11 +51,11 @@ const Orders = sequelize.define("Orders", {
   Status: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    },
-    Hash: {
-        type: DataTypes.STRING,
-        allowNull:false,
-    },
+  },
+  Hash: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 const OrderProducts = sequelize.define("OrderProducts", {
@@ -94,8 +94,7 @@ app.post("/Order", async (req, res) => {
           id: OneProduct.ProductId,
         },
       });
-        console.log(product);
-        console.log(OneProduct.ProductId);
+
       OneProduct.Price = product.Price;
       return OneProduct;
     }),
@@ -109,7 +108,7 @@ app.post("/Order", async (req, res) => {
       Phone: req.body.Phone,
       OrderProducts: Info,
       Status: 10,
-      Hash: await generateHash(req.body.FName + req.body.Phone + Date.now())
+      Hash: generateHash(req.body.FName + req.body.Phone + Date.now()),
     },
     {
       include: [OrderProducts],
@@ -120,14 +119,16 @@ app.post("/Order", async (req, res) => {
 });
 
 async function generateHash(input) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(input);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
 
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => ("00" + b.toString(16)).slice(-2))
+    .join("");
 
-    return hashHex;
+  return hashHex;
 }
 
 // Додати REST endpoint для отримання інформації по замовленню за hash
