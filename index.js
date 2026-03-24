@@ -79,6 +79,16 @@ const app = express();
 const port = 3000;
 app.use(express.json());
 
+app.get("/Order", async (req, res) => {
+  const order = await Orders.findOne({
+    where: {
+      Hash: req.query.hash,
+    },
+    include: OrderProducts,
+  });
+  res.json(order);
+});
+
 app.get("/Products", async (req, res) => {
   const products = await Products.findAll();
   res.json(products);
@@ -94,7 +104,6 @@ app.post("/Order", async (req, res) => {
           id: OneProduct.ProductId,
         },
       });
-
       OneProduct.Price = product.Price;
       return OneProduct;
     }),
@@ -108,7 +117,7 @@ app.post("/Order", async (req, res) => {
       Phone: req.body.Phone,
       OrderProducts: Info,
       Status: 10,
-      Hash: generateHash(req.body.FName + req.body.Phone + Date.now()),
+      Hash: await generateHash(req.body.FName + req.body.Phone + Date.now()),
     },
     {
       include: [OrderProducts],
